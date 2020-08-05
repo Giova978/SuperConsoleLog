@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import { classDeclaration, functionDeclaration, Config } from './utils';
 
-export function getMessage(fileName: string, text: string, selection: vscode.Selection, editor: vscode.TextEditor, config: Config) {
+export function getMessage(insertLine: number, text: string, selection: vscode.Selection, editor: vscode.TextEditor, config: Config) {
 
-    const quotes = config.singleQuotes ? "'" : '"';
-    let message = `console.log(${quotes}${fileName} `;
+    const line = config.includeLine ? `${insertLine}:` : '';
+    const fileName = config.includeFileName ? editor.document.fileName : '';
+    let message = `console.log(${config.quotes}${line}${fileName} `;
     const enclosures = [];
     let funcsFounds = 0;
     let classesFounds = 0;
@@ -16,20 +17,22 @@ export function getMessage(fileName: string, text: string, selection: vscode.Sel
         const classFound = classDeclaration(line.text);
         const funcFound = functionDeclaration(line.text);
 
-        if (classFound && classesFounds <= config.includeEnclosureClassName) {
+        if (classFound && classesFounds < config.includeEnclosureClassName) {
             const enclosureFinish = getEnclosure(currLine, editor.document);
             if (enclosureFinish > -1) {
                 if (enclosureFinish < selection.active.line) { continue; }
                 enclosures.push(classFound);
+                classesFounds++;
             }
         }
 
-        if (funcFound && funcsFounds <= config.includeEnclosureFuncName) {
+        if (funcFound && funcsFounds < config.includeEnclosureFuncName) {
             const enclosureFinish = getEnclosure(currLine, editor.document);
 
             if (enclosureFinish > -1) {
                 if (enclosureFinish < selection.active.line) { continue; }
                 enclosures.push(funcFound);
+                funcsFounds++;
             }
         }
     }
@@ -41,10 +44,10 @@ export function getMessage(fileName: string, text: string, selection: vscode.Sel
         });
     }
 
-    const textFormatted = text.replace(/'/g, "\'").replace(/`/g, "\`").replace(/"/g, '\"');
+    const textFormatted = text.replace(/'/g, "\\'").replace(/`/g, "\\`").replace(/"/g, '\\"');
     const semiColon = config.endSemiColon ? ';' : '';
 
-    message += `-> ${textFormatted}${quotes}, ${textFormatted})${semiColon}`;
+    message += `-> ${textFormatted}${config.quotes}, ${text})${semiColon}`;
     return message;
 }
 

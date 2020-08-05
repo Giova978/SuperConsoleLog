@@ -2,11 +2,12 @@
  * 
  * @param {string} text The text to search  
  * @returns {boolean} Returns true or false if the text is a paremeter of a function
+ * @description Check if the given is a function and if it has arguments
  */
 export function checkIfArgumentOfFunc(text: string) {
     text.trim();
 
-    const functionRegExp = /((?:function\s+[\w\d]+)|(?:(const|let|var)\s+[\w\d]+ = ))(\(((,)?[\s+\w+\d+])+\))/g;
+    const functionRegExp = /((?:function\s+[\w\d]+)?|(?:(const|let|var)\s+[\w\d]+ = ))(\(((,)?[\s+\w+\d+])+\))/g;
     return functionRegExp.test(text);
 }
 
@@ -15,6 +16,7 @@ export function checkIfArgumentOfFunc(text: string) {
  * @param text The text of the line to search
  * @returns {string | boolean} The name of the class in that line or false if not class found
  * @author Giova
+ * @description Search for a class declaration in the given text.
  */
 export function classDeclaration(text: string) {
     text.trim();
@@ -33,6 +35,7 @@ export function classDeclaration(text: string) {
  * @param text The text of the line to search
  * @returns {string | boolean} The name of the function in that line or false if not function found
  * @author Giova
+ * @description Search for a function declaration in the given text. Can fetch constructor, arrow functions and normal functions
  */
 export function functionDeclaration(text: string) {
     text.trim();
@@ -60,9 +63,10 @@ export function functionDeclaration(text: string) {
  * @description The schema type for the configuration  
  */
 export type Config = {
-    singleQuotes: boolean;
+    quotes: string;
     endSemiColon: boolean;
     includeFileName: boolean;
     includeEnclosureFuncName: number;
     includeEnclosureClassName: number;
+    includeLine: boolean;
 };

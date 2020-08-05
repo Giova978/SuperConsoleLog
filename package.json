@@ -1,6 +1,6 @@
 {
-    "name": "consolelogsuper",
-    "displayName": "ConsoleLogSuper",
+    "name": "superconsolelog",
+    "displayName": "SuperConsoleLog",
     "description": "A little extension that add a keybind for console log with extra identifiers",
     "version": "0.0.1",
     "engines": {
@@ -30,10 +30,19 @@
         "configuration": {
             "title": "SuperConsoleLog",
             "properties": {
-                "superConsoleLog.singleQuotes": {
+                "superConsoleLog.quotes": {
                     "type": "boolean",
-                    "default": false,
-                    "description": "Use single quote or use double quote"
+                    "enum": [
+                        "`",
+                        "'",
+                        "\""
+                    ],
+                    "default": "\"",
+                    "enumDescriptions": [
+                        "Use backtick",
+                        "Use single quotes",
+                        "Use double quotes"
+                    ]
                 },
                 "superConsoleLog.endSemiColon": {
                     "type": "boolean",
@@ -45,15 +54,42 @@
                     "default": true,
                     "description": "Put the file name in the console.log"
                 },
-                "superConsoleLog.includeEnclosureFuncName": {
+                "superConsoleLog.includeEnclosureFunctionName": {
                     "type": "number",
                     "default": 2,
-                    "description": "Put the enclosing function name in the console.log"
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
+                    ],
+                    "description": "Put the enclosing function name in the console.log",
+                    "enumDescriptions": [
+                        "This option will deactivate enclosure function"
+                    ]
                 },
                 "superConsoleLog.includeEnclosureClassName": {
                     "type": "number",
                     "default": 1,
-                    "description": "Put the enclosing class  name in the console.log"
+                    "enum": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4
+                    ],
+                    "description": "Put the enclosing class  name in the console.log",
+                    "enumDescriptions": [
+                        "This option will deactivate enclosure class"
+                    ]
+                },
+                "superConsoleLog.includeLineNum": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Include the line number of the console.log"
                 }
             }
         }

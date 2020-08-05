@@ -1,13 +1,12 @@
 import * as vscode from 'vscode';
 import { checkIfArgumentOfFunc, Config } from './utils';
 import { getMessage } from './message';
-import { config } from 'process';
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('consolelogsuper.log', () => {
         const editor = vscode.window.activeTextEditor;
-        const config = vscode.workspace.getConfiguration('SuperConsoleLog');
-        console.log(config.get('singleQuotes'));
+        const configWorkspace = vscode.workspace.getConfiguration('superConsoleLog');
+        const config: Config = createConfigObj(configWorkspace);
 
         if (!editor) { return; }
         if (!editor.selection) { return; }
@@ -36,13 +35,8 @@ export function activate(context: vscode.ExtensionContext) {
             const spaces = " ".repeat(numOfSpaces);
 
             editor.edit(editBuilder => {
-                const message = getMessage(document.fileName, document.getText(selection).trim(), selection, editor, {
-                    endSemiColon: true,
-                    includeEnclosureClassName: 1,
-                    includeEnclosureFuncName: 2,
-                    includeFileName: true,
-                    singleQuotes: false,
-                });
+                // Add one for it to display correctly
+                const message = getMessage(insertLineNum + 1, document.getText(selection).trim(), selection, editor, config);
 
                 const text = `${breakInFileEnd}${spaces}${message}\n`;
 
@@ -52,4 +46,17 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     context.subscriptions.push(disposable);
+}
+
+function createConfigObj(config: vscode.WorkspaceConfiguration) {
+    const configObj: Config = {
+        quotes: config.quotes,
+        endSemiColon: config.endSemiColon,
+        includeFileName: config.includeFileName,
+        includeEnclosureFuncName: config.includeEnclosureFuncName,
+        includeEnclosureClassName: config.includeEnclosureClassName,
+        includeLine: config.includeLineNum,
+    };
+
+    return configObj;
 }
