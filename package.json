@@ -54,6 +54,11 @@
                     "default": true,
                     "description": "Put the file name in the console.log"
                 },
+                "superConsoleLog.includeFullPath": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Put the full path to the file in console.log"
+                },
                 "superConsoleLog.includeEnclosureFunctionName": {
                     "type": "number",
                     "default": 2,

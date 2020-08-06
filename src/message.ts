@@ -4,7 +4,22 @@ import { classDeclaration, functionDeclaration, Config } from './utils';
 export function getMessage(insertLine: number, text: string, selection: vscode.Selection, editor: vscode.TextEditor, config: Config) {
 
     const line = config.includeLine ? `${insertLine}:` : '';
-    const fileName = config.includeFileName ? editor.document.fileName : '';
+    let fileName = editor.document.fileName;
+
+    if (config.includeFileName && !config.includeFullPath) {
+        if (fileName.match(/\\/g)) {
+            const fileNameArr = fileName.split("\\");
+            fileName = fileNameArr[fileNameArr.length - 1];
+        }
+
+        if (fileName.match(/\//g)) {
+            const fileNameArr = fileName.split("/");
+            fileName = fileNameArr[fileNameArr.length - 1];
+        }
+    } else if (!config.includeFileName) {
+        fileName = '';
+    }
+
     let message = `console.log(${config.quotes}${line}${fileName} `;
     const enclosures = [];
     let funcsFounds = 0;

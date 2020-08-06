@@ -7,7 +7,7 @@
 export function checkIfArgumentOfFunc(text: string) {
     text.trim();
 
-    const functionRegExp = /((?:function\s+[\w\d]+)?|(?:(const|let|var)\s+[\w\d]+ = ))(\(((,)?[\s+\w+\d+])+\))/g;
+    const functionRegExp = /(((?!function\s+)([\w\d]+))|(?!const|let|var)([\w\d]+)\s+=\s+)(?:\(((,)?[\s+\w+\d+])*\))(?:(\s+{|\s+=> {))/g;
     return functionRegExp.test(text);
 }
 
@@ -69,4 +69,5 @@ export type Config = {
     includeEnclosureFuncName: number;
     includeEnclosureClassName: number;
     includeLine: boolean;
+    includeFullPath: boolean;
 };

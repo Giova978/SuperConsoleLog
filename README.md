@@ -20,6 +20,7 @@ This extension have the following settings:
 
 * `superConsoleLog.quotes`: a list of quotes to choose for use in the console.log. Default is `"`
 * `superConsoleLog.includeFileName`: set to `true` will include the filename of the console.log. Default is `true`
+* `superConsoleLog.includeFullPath`: set to `true` the extension will add the full path of the file in the console.log. Default is `false`
 * `superConsoleLog.includeEnclosureFunctionName`: how many function enclosure the extension will put in the console.log. Default is `2`
 * `superConsoleLog.includeEnclosureClassName`: how many class enclosure the extension will put in the console.log. Default is `1`
 * `superConsoleLog.includeLineNum`: set to `true` the extension will add the line number in the beginning of the console.log. Default is `true`
@@ -28,9 +29,7 @@ This extension have the following settings:
 
 ## Release Notes
 
-### 1.0.0
-
-Initial release
+[See changelog](CHANGELOG.md)
 
 -----------------------------------------------------------------------------------------------------------
 

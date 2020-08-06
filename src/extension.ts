@@ -28,11 +28,13 @@ export function activate(context: vscode.ExtensionContext) {
                 }
 
                 if (checkIfArgumentOfFunc(line.text)) {
+                    console.log('Argumento');
                     numOfSpaces += tabSize!;
                 }
             }
 
             const spaces = " ".repeat(numOfSpaces);
+            console.log(numOfSpaces);
 
             editor.edit(editBuilder => {
                 // Add one for it to display correctly
@@ -56,6 +58,7 @@ function createConfigObj(config: vscode.WorkspaceConfiguration) {
         includeEnclosureFuncName: config.includeEnclosureFunctionName,
         includeEnclosureClassName: config.includeEnclosureClassName,
         includeLine: config.includeLineNum,
+        includeFullPath: config.includeFullPath,
     };
 
     return configObj;
