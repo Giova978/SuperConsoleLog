@@ -2,7 +2,7 @@
     "name": "superconsolelog",
     "displayName": "SuperConsoleLog",
     "description": "A little extension that add a keybind for formatted console log",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "engines": {
         "vscode": "^1.47.0"
     },
