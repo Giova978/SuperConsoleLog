@@ -1,7 +1,7 @@
 {
     "name": "superconsolelog",
     "displayName": "SuperConsoleLog",
-    "description": "A little extension that add a keybind for console log with extra identifiers",
+    "description": "A little extension that add a keybind for formatted console log",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.47.0"
@@ -10,19 +10,19 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:consolelogsuper.log"
+        "onCommand:superconsolelog.log"
     ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
             {
-                "command": "consolelogsuper.log",
-                "title": "Insert console log"
+                "command": "superconsolelog.log",
+                "title": "Insert formatted console log"
             }
         ],
         "keybindings": [
             {
-                "command": "consolelogsuper.log",
+                "command": "superconsolelog.log",
                 "key": "ctrl+k j",
                 "when": "editorTextFocus"
             }

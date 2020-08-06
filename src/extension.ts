@@ -3,7 +3,7 @@ import { checkIfArgumentOfFunc, Config } from './utils';
 import { getMessage } from './message';
 
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('consolelogsuper.log', () => {
+    let disposable = vscode.commands.registerCommand('superconsolelog.log', async () => {
         const editor = vscode.window.activeTextEditor;
         const configWorkspace = vscode.workspace.getConfiguration('superConsoleLog');
         const config: Config = createConfigObj(configWorkspace);
@@ -53,7 +53,7 @@ function createConfigObj(config: vscode.WorkspaceConfiguration) {
         quotes: config.quotes,
         endSemiColon: config.endSemiColon,
         includeFileName: config.includeFileName,
-        includeEnclosureFuncName: config.includeEnclosureFuncName,
+        includeEnclosureFuncName: config.includeEnclosureFunctionName,
         includeEnclosureClassName: config.includeEnclosureClassName,
         includeLine: config.includeLineNum,
     };
