@@ -8,3 +8,8 @@
 
 - Added the ability to activate and deactivate full path when includeFileName is enabled
 - Fixed a little bug where the regexp identify instantiating of classes like function's parameters
+
+## [1.1.0]
+
+- Added detection for array and object declaration
+- Fixed no detecting array and object deconstruction in function's parameters

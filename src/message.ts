@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { classDeclaration, functionDeclaration, Config } from './utils';
+import { classDeclaration, functionDeclaration, Config, checkForArgumentDeconstruction } from './utils';
 
 export function getMessage(insertLine: number, text: string, selection: vscode.Selection, editor: vscode.TextEditor, config: Config) {
 
@@ -66,13 +66,17 @@ export function getMessage(insertLine: number, text: string, selection: vscode.S
     return message;
 }
 
-function getEnclosure(firstLine: number, document: vscode.TextDocument) {
+export function getEnclosure(firstLine: number, document: vscode.TextDocument) {
     let openBrackets = 0;
     let closedBrackets = 0;
     let finishLine = -1;
 
     for (let currLine = firstLine; currLine < document.lineCount; currLine++) {
         const line = document.lineAt(currLine);
+
+        if (checkForArgumentDeconstruction(line.text)) {
+            openBrackets++;
+        }
 
         if (Array.isArray(line.text.match(/{/g))) {
             openBrackets++;
@@ -83,6 +87,7 @@ function getEnclosure(firstLine: number, document: vscode.TextDocument) {
         }
 
         if (openBrackets === closedBrackets) {
+            console.log("91:message.ts -> currLine", currLine);
             finishLine = currLine;
             break;
         }

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { checkIfArgumentOfFunc, Config } from './utils';
-import { getMessage } from './message';
+import { checkIfArgumentOfFunc, Config, checkForArgumentDeconstruction, checkObjectArrayDeclaration } from './utils';
+import { getMessage, getEnclosure } from './message';
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('superconsolelog.log', async () => {
@@ -15,8 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         editor.selections.map(selection => {
             const line = document.lineAt(selection.active.line);
-            const insertLineNum = line.lineNumber + 1;
-            const position = new vscode.Position(insertLineNum, 0);
+            let insertLineNum = line.lineNumber + 1;
             const breakInFileEnd = line.lineNumber === document.lineCount - 1 ? '\n' : '';
 
             let numOfSpaces = 0;
@@ -27,14 +26,17 @@ export function activate(context: vscode.ExtensionContext) {
                     numOfSpaces = line.firstNonWhitespaceCharacterIndex;
                 }
 
-                if (checkIfArgumentOfFunc(line.text)) {
-                    console.log('Argumento');
+                if (checkIfArgumentOfFunc(line.text) && checkForArgumentDeconstruction(line.text)) {
                     numOfSpaces += tabSize!;
                 }
             }
 
+            if (checkObjectArrayDeclaration(line.text)) {
+                insertLineNum = getEnclosure(line.lineNumber, document) + 1;
+            }
+
             const spaces = " ".repeat(numOfSpaces);
-            console.log(numOfSpaces);
+            const position = new vscode.Position(insertLineNum, 0);
 
             editor.edit(editBuilder => {
                 // Add one for it to display correctly
