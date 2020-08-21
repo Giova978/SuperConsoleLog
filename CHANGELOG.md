@@ -25,3 +25,7 @@
 - Fix not detecting end of arrays declaration correctly
 - Added inline if support
 - Added if support
+
+## [1.2.0]
+
+- Added the ability to detect for loops, while loops and do/while loops

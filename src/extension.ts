@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { checkIfArgumentOfFunc, Config, checkObjectArrayDeclaration, checkIfDeclaration, getFunctionType } from './utils';
-import { getMessage, getEnclosure } from './message';
+import { checkIfArgumentOfFunc, Config, checkObjectArrayDeclaration, checkIfDeclaration, getFunctionType, checkWhileLoop, checkForLoop } from './utils';
+import { getMessage, getEnclosure, getDoWhileStartLine } from './message';
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('superconsolelog.log', async () => {
@@ -22,10 +22,12 @@ export function activate(context: vscode.ExtensionContext) {
             let inlineInsertion = false;
             let numOfSpaces = 0;
 
+            // Gets the type indicated in varible name
             const ifType = checkIfDeclaration(line.text);
-            // Gets the function type to know if it inserts in the same line or createa a new line
+            const whileType = checkWhileLoop(line.text);
             const functionType = getFunctionType(line.text);
-            // Get the tabulation in a function or if
+
+            // Get the tabulation of the scope(like functions, loops or ifs)
             if (!line?.isEmptyOrWhitespace) {
 
                 // Get the tabulation from the first character in the line
@@ -33,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
                     numOfSpaces = line.firstNonWhitespaceCharacterIndex;
                 }
 
-                if (ifType || checkIfArgumentOfFunc(line.text)) {
+                if (ifType || checkIfArgumentOfFunc(line.text) || whileType === 'while' || checkForLoop(line.text)) {
                     numOfSpaces += tabSize!;
                 }
             }
@@ -42,12 +44,20 @@ export function activate(context: vscode.ExtensionContext) {
                 insertLineNum = getEnclosure(line.lineNumber, document) + 1;
             }
 
-            if (functionType === 'normal' || functionType === 'arrow') {
-                console.log(functionType);
+            if (functionType !== 'arrow-inline' && !functionType) {
                 insertLineNum + 1;
             }
 
+            // Default position for the console.log if nothing it isn't function parameters, varibales in if etc
             position = new vscode.Position(insertLineNum, 0);
+
+            if (whileType === 'do/while') {
+                // Add one to insert it below of do {
+                insertLineNum = getDoWhileStartLine(line.lineNumber, document) + 1;
+                position = new vscode.Position(insertLineNum, 0);
+                numOfSpaces += tabSize!;
+            }
+
             // If the console.log goes in the end of the file it will add a line brak for vscode to create a new line
             const breakInFileEnd = insertLineNum >= document.lineCount - 1 ? '\n' : '';
 

@@ -136,6 +136,39 @@ export function getFunctionType(text: string) {
 }
 
 /**
+ * @param {string} text The text of the line to search
+ * @returns {boolean | string} Returns the type of the while loop detected or false if no while loop find
+ * @author Giova
+ */
+export function checkWhileLoop(text: string) {
+    text.trim();
+
+    const regExp = /(while\s*)(\(.+\))(\s*{)?/g;
+    const exec = regExp.exec(text);
+
+    if (exec) {
+        if (!exec[3]) {
+            return 'do/while';
+        }
+
+        return 'while';
+    }
+
+    return false;
+}
+
+/**
+ * @param {string} text The text of the line to search
+ * @returns {boolean} Returns true if it found a for loop or false if it isnt
+ * @author Giova
+ */
+export function checkForLoop(text: string) {
+    text.trim();
+
+    const regExp = /(for\s*)(\(.+\))(\s*{)/g;
+    return regExp.test(text);
+}
+/**
  * @type {object}
  * @description The schema type for the configuration  
  * @author Giova
