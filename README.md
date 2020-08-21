@@ -31,6 +31,10 @@ This extension have the following settings:
 
 [See changelog](CHANGELOG.md)
 
+## Future Plans
+
+* Add support for for loops, while do loops and do while loops
+
 -----------------------------------------------------------------------------------------------------------
 
 ## Author

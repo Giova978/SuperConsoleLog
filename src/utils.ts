@@ -9,7 +9,7 @@ export function checkIfArgumentOfFunc(text: string) {
     text.trim();
 
     // const functionRegExp = /(((?!function)(?!\s+[\w\d]+))|(?!const|let|var)([\w\d]+)\s+=\s+)(?:\(((,)?[\[|{|}|\]\s+\w+\d+])*\))(?:(\s*{|\s*=>))/g;
-    const functionRegExp = /(\((,?.)+\)(\s*{|\s*=>))/g;
+    const functionRegExp = /(\((\s?,?.\s?)+\)(\s*{|\s*=>))/g;
     return functionRegExp.test(text);
 }
 
@@ -38,16 +38,16 @@ export function classDeclaration(text: string) {
  * @description Search for a function declaration in the given text. Can fetch constructor, arrow functions and normal functions
  * @author Giova
  */
-export function functionDeclaration(text: string) {
+export function getFunctionName(text: string) {
     text.trim();
 
-    const functionRegExp = /(((?!function\s+)([\w\d]+))|(?!const|let|var)([\w\d]+)\s+=\s+)(?:\(((,)?[\s+\w+\d+])*\))(?:(\s+{|\s+=>\s*{))/g;
+    const functionRegExp = /((?!function )([\w\d]+)(?:\(.*\))\s*{)|((?!const |let |var )([\w\d]+)(?:\s*=\s*)(.*)(\s*=>\s*)({?))/g;
     const exec = functionRegExp.exec(text);
 
     if (exec) {
         // Case that the reg exp found a normal function
-        if (exec[3]) {
-            return exec[3];
+        if (exec[2] && exec[2] !== 'function') {
+            return exec[2];
         }
 
         // Case that reg exp found an arrow function
@@ -75,6 +75,7 @@ export function checkForArgumentDeconstruction(text: string) {
 /**
  * @param {string} text The text of the line to search
  * @returns {boolean} Returns true if it found a array declaration or object declaration otherwise returns false
+ * @author Giova
  */
 export function checkObjectArrayDeclaration(text: string) {
     text.trim();
@@ -85,15 +86,31 @@ export function checkObjectArrayDeclaration(text: string) {
 
 /**
  * @param {string} text The text of the line to search
- * @returns {boolean} Returns true if it found a if statement
+ * @returns {boolean | string} Returns the type of the if it found a if statement or false if it not found any if
+ * @author Giova
  */
 export function checkIfDeclaration(text: string) {
     text.trim();
 
-    const ifDeclarationRegExp = /(?:if\s*)((?:\().+(?:\)))/g;
-    return ifDeclarationRegExp.test(text);
+    const ifDeclarationRegExp = /(?:if\s*)((?:\().+(?:\)))\s*({?)/g;
+    const exec = ifDeclarationRegExp.exec(text);
+
+    if (exec) {
+        if (!exec[2]) {
+            return 'inline';
+        }
+
+        return 'normal';
+    }
+
+    return false;
 }
 
+/**
+ * @param {string} text The text of the line to search
+ * @returns {boolean | string} Returns the type of the function detected or false if no function find
+ * @author Giova
+ */
 export function getFunctionType(text: string) {
     text.trim();
 
@@ -102,7 +119,6 @@ export function getFunctionType(text: string) {
 
 
     if (exec) {
-        console.log(exec[5]);
         if (exec[1]) {
             return 'normal';
         }

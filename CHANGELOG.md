@@ -18,3 +18,10 @@
 
 - Replaces some regular expressions for other more simple
 - Added the ability to put the console.log in the same line as a inline arrow function
+
+## [1.1.8]
+
+- Fix the extension inserting in the line above and not below
+- Fix not detecting end of arrays declaration correctly
+- Added inline if support
+- Added if support

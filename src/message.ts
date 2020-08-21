@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { classDeclaration, functionDeclaration, Config, checkForArgumentDeconstruction } from './utils';
+import { classDeclaration, getFunctionName, Config, checkForArgumentDeconstruction } from './utils';
 
 export function getMessage(insertLine: number, text: string, selection: vscode.Selection, editor: vscode.TextEditor, config: Config) {
 
@@ -30,7 +30,7 @@ export function getMessage(insertLine: number, text: string, selection: vscode.S
         if (line.text.startsWith("//")) { continue; }
 
         const classFound = classDeclaration(line.text);
-        const funcFound = functionDeclaration(line.text);
+        const funcFound = getFunctionName(line.text);
 
         if (classFound && classesFounds < config.includeEnclosureClassName) {
             const enclosureFinish = getEnclosure(currLine, editor.document);
@@ -78,11 +78,11 @@ export function getEnclosure(firstLine: number, document: vscode.TextDocument) {
             openBrackets++;
         }
 
-        if (Array.isArray(line.text.match(/{/g))) {
+        if (Array.isArray(line.text.match(/{|\[/g))) {
             openBrackets++;
         }
 
-        if (Array.isArray(line.text.match(/}/g))) {
+        if (Array.isArray(line.text.match(/}|\]/g))) {
             closedBrackets++;
         }
 
