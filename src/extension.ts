@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { checkIfArgumentOfFunc, Config, checkForArgumentDeconstruction, checkObjectArrayDeclaration } from './utils';
+import { checkIfArgumentOfFunc, Config, checkForArgumentDeconstruction, checkObjectArrayDeclaration, checkIfDeclaration, getFunctionType } from './utils';
 import { getMessage, getEnclosure } from './message';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -15,12 +15,12 @@ export function activate(context: vscode.ExtensionContext) {
 
         editor.selections.map(selection => {
             const line = document.lineAt(selection.active.line);
-            let insertLineNum = line.lineNumber + 1;
+            let insertLineNum = line.lineNumber;
             const breakInFileEnd = line.lineNumber === document.lineCount - 1 ? '\n' : '';
 
             let numOfSpaces = 0;
 
-            // Get the tabulation in the
+            // Get the tabulation in a function or if
             if (!line?.isEmptyOrWhitespace) {
                 if (line?.firstNonWhitespaceCharacterIndex) {
                     numOfSpaces = line.firstNonWhitespaceCharacterIndex;
@@ -29,10 +29,21 @@ export function activate(context: vscode.ExtensionContext) {
                 if (checkIfArgumentOfFunc(line.text) && checkForArgumentDeconstruction(line.text)) {
                     numOfSpaces += tabSize!;
                 }
+
+                if (checkIfDeclaration(line.text)) {
+                    numOfSpaces += tabSize!;
+                }
             }
 
             if (checkObjectArrayDeclaration(line.text)) {
                 insertLineNum = getEnclosure(line.lineNumber, document) + 1;
+            }
+
+            const functionType = getFunctionType(line.text);
+
+
+            if (functionType === 'normal' || functionType === 'arrow') {
+                insertLineNum + 1;
             }
 
             const spaces = " ".repeat(numOfSpaces);
@@ -42,9 +53,15 @@ export function activate(context: vscode.ExtensionContext) {
                 // Add one for it to display correctly
                 const message = getMessage(insertLineNum + 1, document.getText(selection).trim(), selection, editor, config);
 
-                const text = `${breakInFileEnd}${spaces}${message}\n`;
+                let text = `${spaces}${message}\n`;
 
-                editBuilder.insert(position, text);
+                if (functionType === 'arrow-inline') {
+                    editBuilder.replace(new vscode.Position(insertLineNum, line.text.length), text);
+                } else {
+                    text = `${breakInFileEnd}${text}`;
+
+                    editBuilder.insert(position, text);
+                }
             });
         });
     });

@@ -87,7 +87,6 @@ export function getEnclosure(firstLine: number, document: vscode.TextDocument) {
         }
 
         if (openBrackets === closedBrackets) {
-            console.log("91:message.ts -> currLine", currLine);
             finishLine = currLine;
             break;
         }

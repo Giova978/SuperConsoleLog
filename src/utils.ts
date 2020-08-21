@@ -8,7 +8,8 @@
 export function checkIfArgumentOfFunc(text: string) {
     text.trim();
 
-    const functionRegExp = /(((?!function)(?!\s+[\w\d]+))|(?!const|let|var)([\w\d]+)\s+=\s+)(?:\(((,)?[\[|{|}|\]\s+\w+\d+])*\))(?:(\s*{|\s*=>))/g;
+    // const functionRegExp = /(((?!function)(?!\s+[\w\d]+))|(?!const|let|var)([\w\d]+)\s+=\s+)(?:\(((,)?[\[|{|}|\]\s+\w+\d+])*\))(?:(\s*{|\s*=>))/g;
+    const functionRegExp = /(\((,?.)+\)(\s*{|\s*=>))/g;
     return functionRegExp.test(text);
 }
 
@@ -40,7 +41,7 @@ export function classDeclaration(text: string) {
 export function functionDeclaration(text: string) {
     text.trim();
 
-    const functionRegExp = /(((?!function\s+)([\w\d]+))|(?!const|let|var)([\w\d]+)\s+=\s+)(?:\(((,)?[\s+\w+\d+])*\))(?:(\s+{|\s+=> {))/g;
+    const functionRegExp = /(((?!function\s+)([\w\d]+))|(?!const|let|var)([\w\d]+)\s+=\s+)(?:\(((,)?[\s+\w+\d+])*\))(?:(\s+{|\s+=>\s*{))/g;
     const exec = functionRegExp.exec(text);
 
     if (exec) {
@@ -72,7 +73,7 @@ export function checkForArgumentDeconstruction(text: string) {
 }
 
 /**
- * @param {string} tex The text of the line to search
+ * @param {string} text The text of the line to search
  * @returns {boolean} Returns true if it found a array declaration or object declaration otherwise returns false
  */
 export function checkObjectArrayDeclaration(text: string) {
@@ -80,6 +81,42 @@ export function checkObjectArrayDeclaration(text: string) {
 
     const objectArrayDeclarationRegExp = /(?!(const|let|var))({?[\w\d]+}?\s*=\s*({|\[))/g;
     return objectArrayDeclarationRegExp.exec(text);
+}
+
+/**
+ * @param {string} text The text of the line to search
+ * @returns {boolean} Returns true if it found a if statement
+ */
+export function checkIfDeclaration(text: string) {
+    text.trim();
+
+    const ifDeclarationRegExp = /(?:if\s*)((?:\().+(?:\)))/g;
+    return ifDeclarationRegExp.test(text);
+}
+
+export function getFunctionType(text: string) {
+    text.trim();
+
+    const regExp = /((?!function )(?:[\w\d]+\(.*\))\s*{)|((?!const |let |var )(?![\w\d]+\s*=\s*)(.*)(\s*=>\s*)({?))/g;
+    const exec = regExp.exec(text);
+
+
+    if (exec) {
+        console.log(exec[5]);
+        if (exec[1]) {
+            return 'normal';
+        }
+
+        if (!exec[5]) {
+            return 'arrow-inline';
+        }
+
+        if (exec[4]) {
+            return 'arrow';
+        }
+    }
+
+    return false;
 }
 
 /**

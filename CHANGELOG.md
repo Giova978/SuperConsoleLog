@@ -13,3 +13,8 @@
 
 - Added detection for array and object declaration
 - Fixed no detecting array and object deconstruction in function's parameters
+
+## [1.1.5]
+
+- Replaces some regular expressions for other more simple
+- Added the ability to put the console.log in the same line as a inline arrow function
